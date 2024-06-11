@@ -65,13 +65,18 @@ class FetchHandler(View):
     def post(self, request):
         # Получаем значения из ответа
         values = json.loads(request.body.decode('utf-8'))
-
         user = get_user(request)
-        #
-        content = Content.objects.create(title=values['title'], description=values['description'])
-        for source in values['sources']:
-            Photo.objects.create(photo=source, content_id=content)
-        Mark.objects.create(latitude=values['lat'], longitude=values['lng'], user_id=user, content_id=content)
+
+        if values['is_like']:
+            likes_count_set = Mark.objects.filter(latitude=values['lat'], longitude=values['lng']).values('likes')
+            likes_count = likes_count_set[0].get("likes")
+            Mark.objects.filter(latitude=values['lat'], longitude=values['lng']).update(likes=likes_count+1)
+        else:
+            content = Content.objects.create(title=values['title'], description=values['description'])
+            for source in values['sources']:
+                Photo.objects.create(photo=source, content_id=content)
+            Mark.objects.create(latitude=values['lat'], longitude=values['lng'], user_id=user, content_id=content)
+
 
 
         print('Выполнение POST-запроса')

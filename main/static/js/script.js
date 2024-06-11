@@ -55,17 +55,27 @@ async function makeRequest(url, method, body){
         headers['X-CSRFToken'] = csrf
     }
 
-    let response = await fetch(url, {
-        method: method,
-        headers: headers,
-        body: body
-    })
-
+    let response = await fetch(
+        url,
+        {
+            method: method,
+            headers: headers,
+            body: body
+        }
+    )
 
     return await response
 }
 
-
+// Функция проставления лайка
+function addLike(latitude, longitude) {
+     likeData= {
+        'lat': latitude,
+        'lng': longitude,
+        'is_like': 1
+    }
+    makeRequest('/map', 'POST', JSON.stringify(likeData))
+}
 
 // Функция создания маркера на карте
 function addMarker(form, coordinates, map) {
@@ -86,15 +96,14 @@ function addMarker(form, coordinates, map) {
         'lng': coordinates.lng,
         'title': markTitle,
         'description': markDescription,
-        'sources': sourcesMarkArray
+        'sources': sourcesMarkArray,
+        'is_like': 0
     }
     // Создание маркера
     L.marker([coordinates.lat, coordinates.lng], {icon:myIcon}).addTo(map)
     makeRequest('/map', 'POST', JSON.stringify(markData))
     map.closePopup()
 }
-
-
 
 // Добавление маркера по нажатию ПКМ. Всплывает модальное окно для заполнения всей инфы по данному месту.
 // При нажатии кнопки "Добавить место" данные должны улетать на бэк. 
@@ -167,38 +176,36 @@ function addPopupOnClick(map){
 //  icon: myIcon,
 //}).addTo(map)
 
-function fillContent(marker, title, description, photos){
-let photoArray = ""
+function fillContent(marker, title, description, photos, coordinates){
 
-
-
-for (let photo of photos){
-    photoArray += `<div class="photo-block"><div class="preview-container"><div class="image-container"><img src='${photo}'></div></div></div>`
-//    const div1 = document.createElement('div')
-//    const div2 = document.createElement('div')
-//    const div3 = document.createElement('div')
-//    div1.appendChild(div2)
-//    div2.appendChild(div3)
-//    div1.classList.add("photo-block")
-//    div2.classList.add("preview-container")
-//    div3.classList.add("image-container")
-//
-//    let val = document.createElement('img')
-//    val.setAttribute("src", photo)
-//
-//    div3.appendChild(val)
-//    photoArray += div1
-//    let b = ``
-//    console.log(b)
-}
-
+    let photoArray = ""
+    for (let photo of photos){
+        photoArray += `<div class="photo-block"><div class="preview-container"><div class="image-container"><img src='${photo}'></div></div></div>`
+    //    const div1 = document.createElement('div')
+    //    const div2 = document.createElement('div')
+    //    const div3 = document.createElement('div')<p>ASDFASDFASDDAFSASDF</p>
+    //    div1.appendChild(div2)
+    //    div2.appendChild(div3)
+    //    div1.classList.add("photo-block")
+    //    div2.classList.add("preview-container")
+    //    div3.classList.add("image-container")
+    //
+    //    let val = document.createElement('img')
+    //    val.setAttribute("src", photo)
+    //
+    //    div3.appendChild(val)
+    //    photoArray += div1
+    //    let b = ``
+    //    console.log(b)
+    }
     let fillContent = ((name, description, photoArray) => {
       let content = `<h2 class="popup-title">${name}</h2>
       <div class="photo-section">
         ${photoArray}
       </div>
       <div class="content_description">${description}</div>
-      </div>`
+      ${coordinates}
+      </div><button id='like_button'onclick="addLike(${coordinates[0]}, ${coordinates[1]})">ЛАЙК</button>`
       return content
     })
   marker.bindPopup(fillContent(title, description, photoArray))

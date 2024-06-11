@@ -17,6 +17,8 @@ class Mark(models.Model):
         to='Content',
         on_delete=models.CASCADE)
 
+    likes = models.IntegerField(default=0)
+
     objects = models.Manager()
 
     def __str__(self):
