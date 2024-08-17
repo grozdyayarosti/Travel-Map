@@ -136,10 +136,14 @@ function addPopupOnClick(map){
         </div>
         <div class="preview-container"></div>
 
-        <button id='addMarkButton'
-            onclick="addMarker(document.getElementById('myForm'), coordinates, map_copy)">
-            Отправить
-        </button>
+
+        <form method="GET">
+            <button class="back_btn" type="submit" id='addMarkButton'
+                onclick="addMarker(document.getElementById('myForm'), coordinates, map_copy)">
+                Отправить
+            </button>
+        </form>
+
       </form>
       `)
     .openOn(map);
@@ -202,14 +206,11 @@ function fillContent(marker, title, description, photos, coordinates, content_id
 
                         if (event.target.style.backgroundImage == 'url("static/img/1.png")')
                         {
-
                             event.target.style.backgroundImage = 'url("static/img/Like_Heart.png")'
                             likesCount--;
                         } else {
                             event.target.style.backgroundImage = 'url("static/img/1.png")';
                             likesCount++;
-
-
                         }
 
                         likes_counter.textContent = likesCount

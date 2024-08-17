@@ -180,7 +180,7 @@
     {{ photos|json_script:"photos-json"}}
     {{ content_likes|json_script:"like-json"}}
     {{ state_like|json_script:"state-like-json"}}
-    {{user_levels|json_script:"test"}}
+    {{ user_levels|json_script:"test"}}
 
     {% else %}
         <a href="{% url 'main:users_app:auth' %}">Авторизация</a>
